@@ -32,9 +32,29 @@
     letter-spacing: 0.3px;
   }
   header h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-  header p { font-size: 14px; color: #6e6e73; line-height: 1.6; }
+  header p  { font-size: 14px; color: #6e6e73; line-height: 1.6; }
 
-  .container { max-width: 960px; margin: 0 auto; padding: 28px 16px; }
+  .guide-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .guide-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #F5F5F7;
+    border: 1px solid #e5e5ea;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: #3c3c43;
+    font-weight: 500;
+  }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 28px 16px; }
 
   .layout { display: flex; gap: 20px; align-items: flex-start; }
 
@@ -52,9 +72,15 @@
     font-size: 13px;
     font-weight: 700;
     color: #3c3c43;
-    margin-bottom: 4px;
     padding-bottom: 12px;
+    margin-bottom: 4px;
     border-bottom: 1px solid #f2f2f7;
+  }
+  .category-sub {
+    font-size: 11px;
+    font-weight: 400;
+    color: #8e8e93;
+    margin-left: 6px;
   }
 
   .competency-item {
@@ -72,7 +98,7 @@
   .competency-item.checked { background: #EEF2FF; }
 
   .competency-item input[type="checkbox"] {
-    margin-top: 2px;
+    margin-top: 3px;
     width: 17px;
     height: 17px;
     cursor: pointer;
@@ -80,15 +106,34 @@
     flex-shrink: 0;
   }
   .comp-label { flex: 1; }
+  .comp-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-bottom: 4px;
+    letter-spacing: 0.2px;
+  }
+  .tag-interest { background: #EEF2FF; color: #4F46E5; }
+  .tag-good     { background: #ECFDF5; color: #059669; }
+  .tag-enjoy    { background: #FFF7ED; color: #D97706; }
+  .tag-exp      { background: #FDF4FF; color: #9333EA; }
+
   .comp-name {
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 3px;
     color: #1d1d1f;
-    transition: color 0.15s;
   }
   .competency-item.checked .comp-name { color: #4F46E5; }
   .comp-desc { font-size: 12px; color: #8e8e93; line-height: 1.5; }
+  .comp-jd {
+    font-size: 11px;
+    color: #b0b0ba;
+    margin-top: 3px;
+    font-style: italic;
+  }
 
   /* Result panel */
   .result-panel {
@@ -150,7 +195,6 @@
     font-weight: 800;
     color: #4338CA;
     margin-bottom: 5px;
-    transition: color 0.3s;
   }
   .top-pick .pick-reason {
     font-size: 12px;
@@ -184,7 +228,6 @@
     height: 7px;
     border-radius: 6px;
     transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
-    min-width: 0;
   }
 
   .reset-btn {
@@ -213,12 +256,18 @@
 <header>
   <div class="badge">디지털 마케터 부트캠프</div>
   <h1>나는 어떤 마케터일까? 🎯</h1>
-  <p>해당되는 역량을 모두 체크하세요.<br>레이더 차트로 나의 직무 적합도를 바로 확인할 수 있습니다.</p>
+  <p>경험이 없어도 괜찮습니다. 관심·성향·재미를 기준으로 솔직하게 체크하세요.<br>
+     체크할수록 나의 직무 적합도가 레이더 차트로 나타납니다.</p>
+  <div class="guide-row">
+    <span class="guide-chip"><span style="background:#EEF2FF;color:#4F46E5;padding:1px 5px;border-radius:6px;font-size:10px;font-weight:700;">관심있다</span> 배우고 싶거나 흥미로운 것</span>
+    <span class="guide-chip"><span style="background:#ECFDF5;color:#059669;padding:1px 5px;border-radius:6px;font-size:10px;font-weight:700;">잘한다</span> 남들보다 잘한다고 느끼는 것</span>
+    <span class="guide-chip"><span style="background:#FFF7ED;color:#D97706;padding:1px 5px;border-radius:6px;font-size:10px;font-weight:700;">재미있다</span> 하면 시간 가는 줄 모르는 것</span>
+    <span class="guide-chip"><span style="background:#FDF4FF;color:#9333EA;padding:1px 5px;border-radius:6px;font-size:10px;font-weight:700;">경험있다</span> 실제로 해본 적 있는 것</span>
+  </div>
 </header>
 
 <div class="container">
   <div class="layout">
-
     <div class="checklist-panel" id="checklist"></div>
 
     <div class="result-panel">
@@ -230,11 +279,11 @@
       </div>
 
       <div class="reco-card">
-        <div class="progress-text"><span id="checked-count">0</span>개 역량 선택됨</div>
+        <div class="progress-text"><span id="checked-count">0</span> / 30개 항목 선택됨</div>
 
         <div class="top-pick">
           <div class="pick-label">✨ 가장 잘 맞는 직무</div>
-          <div class="pick-job" id="top-job">역량을 선택해주세요</div>
+          <div class="pick-job" id="top-job">항목을 선택해주세요</div>
           <div class="pick-reason" id="top-reason">체크할수록 결과가 정확해집니다</div>
         </div>
 
@@ -244,7 +293,6 @@
         <button class="reset-btn" onclick="resetAll()">↺ 초기화</button>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -259,183 +307,329 @@ const JOBS = [
 ];
 
 const JOB_REASONS = {
-  performance: '광고 운영·데이터 분석 역량이 뛰어납니다',
+  performance: '광고 운영·데이터 분석 성향이 뚜렷합니다',
   content:     '콘텐츠 제작·트렌드 감각이 돋보입니다',
   brand:       '브랜드 전략·크리에이티브 기획이 강점입니다',
-  growth:      '데이터 기반 실험·퍼널 분석 역량이 높습니다',
-  crm:         '고객 분석·관계 관리 역량이 강점입니다',
+  growth:      '데이터 기반 실험·퍼널 분석 성향이 높습니다',
+  crm:         '고객 분석·관계 관리 성향이 강점입니다',
   ae:          '기획력·클라이언트 커뮤니케이션이 뛰어납니다',
 };
 
+// tag: 'interest' | 'good' | 'enjoy' | 'exp'
 const COMPETENCIES = [
   {
-    category: '📊 데이터 & 분석',
+    category: '📊 숫자 & 데이터',
+    sub: 'JD 키워드: CTR, CVR, ROAS, CPA, GA4, 퍼널, A/B테스트',
     items: [
       {
-        id: 'data_read', name: '데이터 읽기 & 지표 해석',
-        desc: 'CTR, CVR, ROAS, CPA 등 마케팅 지표를 이해하고 해석할 수 있다',
-        w: { performance:3, content:1, brand:1, growth:3, crm:3, ae:2 }
+        id: 'c01', tag: 'interest',
+        name: '광고 성과 지표(CTR, ROAS, CPA 등)가 무엇을 의미하는지 이해하고 싶다',
+        desc: '클릭률, 전환율, 광고비 대비 매출 등 숫자가 어떤 의미인지 궁금하다',
+        jd: '퍼포먼스·그로스 마케터 JD에 필수 등장',
+        w: { performance:3, content:0, brand:0, growth:3, crm:2, ae:1 }
       },
       {
-        id: 'tool_analytics', name: '분석 툴 활용 (GA4 등)',
-        desc: 'GA4, 네이버 애널리틱스, 믹스패널 등 데이터 분석 툴을 사용할 수 있다',
-        w: { performance:3, content:1, brand:0, growth:3, crm:2, ae:1 }
+        id: 'c02', tag: 'enjoy',
+        name: '숫자나 표를 보면서 "왜 이런 결과가 나왔을까?" 분석하는 게 재미있다',
+        desc: '데이터를 보며 원인을 찾는 과정이 흥미롭다',
+        jd: '데이터 드리븐 의사결정, 성과 분석 역량',
+        w: { performance:3, content:0, brand:0, growth:3, crm:2, ae:1 }
       },
       {
-        id: 'ab_test', name: 'A/B 테스트 & 실험 설계',
-        desc: '가설을 세우고 실험을 설계하여 결과를 분석한 경험이 있다',
-        w: { performance:2, content:1, brand:0, growth:3, crm:2, ae:1 }
-      },
-      {
-        id: 'funnel', name: '퍼널 분석 & 전환율 개선',
-        desc: '유입→전환→이탈 흐름을 분석하고 병목 지점을 찾아낼 수 있다',
+        id: 'c03', tag: 'interest',
+        name: 'A/B 테스트처럼 두 가지를 비교해서 어떤 게 더 효과적인지 실험해보고 싶다',
+        desc: '가설을 세우고 실험으로 검증하는 방식에 관심이 있다',
+        jd: 'A/B 테스트 설계·운영, 가설 검증 경험',
         w: { performance:2, content:0, brand:0, growth:3, crm:2, ae:1 }
       },
       {
-        id: 'report', name: '성과 보고 & 인사이트 도출',
-        desc: '데이터를 정리하여 의미 있는 인사이트를 뽑아 보고서로 작성할 수 있다',
-        w: { performance:2, content:1, brand:1, growth:3, crm:2, ae:2 }
+        id: 'c04', tag: 'interest',
+        name: 'GA4, 네이버 애널리틱스 같은 분석 툴로 방문자 데이터를 들여다보고 싶다',
+        desc: '웹사이트나 앱에 사람들이 어떻게 들어오고 어디서 나가는지 궁금하다',
+        jd: 'GA4 활용 역량, 웹 분석 경험',
+        w: { performance:3, content:1, brand:0, growth:3, crm:2, ae:1 }
+      },
+      {
+        id: 'c05', tag: 'good',
+        name: '복잡한 내용을 표나 그래프로 깔끔하게 정리하는 편이다',
+        desc: '데이터나 정보를 시각적으로 구조화하는 것을 잘한다',
+        jd: '성과 보고서 작성, 인사이트 도출 역량',
+        w: { performance:2, content:0, brand:1, growth:3, crm:2, ae:2 }
       },
     ]
   },
   {
-    category: '✍️ 콘텐츠 & 크리에이티브',
+    category: '✍️ 글쓰기 & 콘텐츠',
+    sub: 'JD 키워드: 카피라이팅, 콘텐츠 기획, SNS 운영, 숏폼, 블로그',
     items: [
       {
-        id: 'copywriting', name: '카피라이팅 & 스토리텔링',
-        desc: '사람의 감정을 건드리는 문구와 이야기를 만들 수 있다',
-        w: { performance:1, content:3, brand:3, growth:1, crm:2, ae:2 }
+        id: 'c06', tag: 'good',
+        name: '사람의 감정을 건드리는 문장이나 카피를 쓰는 걸 잘한다',
+        desc: '"이 말이 딱이다"라는 느낌의 문구를 만들어낸 경험이 있다',
+        jd: '카피라이팅, 메시지 기획, 광고 소재 제작',
+        w: { performance:1, content:3, brand:3, growth:0, crm:2, ae:2 }
       },
       {
-        id: 'content_create', name: '콘텐츠 기획 & 제작',
-        desc: '블로그, SNS, 숏폼 영상 등 다양한 포맷의 콘텐츠를 기획하고 만들 수 있다',
-        w: { performance:1, content:3, brand:2, growth:1, crm:2, ae:2 }
+        id: 'c07', tag: 'enjoy',
+        name: '인스타그램, 블로그, 유튜브 등 SNS 콘텐츠를 기획하고 만드는 게 재미있다',
+        desc: '어떤 주제로 어떻게 표현할지 고민하는 과정이 즐겁다',
+        jd: 'SNS 채널 운영, 콘텐츠 기획·제작 역량',
+        w: { performance:0, content:3, brand:2, growth:0, crm:1, ae:2 }
       },
       {
-        id: 'design_tool', name: '디자인 툴 활용 (피그마·캔바 등)',
-        desc: '피그마, 포토샵, 캔바 등으로 시각 자료를 직접 제작할 수 있다',
-        w: { performance:1, content:2, brand:2, growth:0, crm:1, ae:1 }
+        id: 'c08', tag: 'good',
+        name: '유행하는 밈, 트렌드를 빠르게 파악하고 콘텐츠에 녹여내는 편이다',
+        desc: '요즘 뭐가 뜨는지 자연스럽게 관심이 가고 빠르게 캐치한다',
+        jd: '트렌드 리서치, 바이럴 콘텐츠 기획',
+        w: { performance:0, content:3, brand:2, growth:0, crm:0, ae:2 }
       },
       {
-        id: 'creative_idea', name: '광고 소재 기획',
-        desc: '광고 소재의 메시지와 비주얼 방향을 기획할 수 있다',
-        w: { performance:2, content:2, brand:3, growth:1, crm:1, ae:2 }
+        id: 'c09', tag: 'exp',
+        name: '숏폼 영상(릴스, 쇼츠 등)을 직접 기획하거나 편집해본 적이 있다',
+        desc: '영상 스크립트 작성, 편집 툴 사용 경험이 있다',
+        jd: '숏폼 영상 제작, 바이럴 콘텐츠 운영',
+        w: { performance:0, content:3, brand:1, growth:0, crm:0, ae:1 }
       },
       {
-        id: 'trend', name: '트렌드 리서치 & 시장 분석',
-        desc: '시장과 소비자 트렌드를 빠르게 감지하고 전략에 반영할 수 있다',
-        w: { performance:1, content:3, brand:3, growth:1, crm:1, ae:2 }
+        id: 'c10', tag: 'enjoy',
+        name: '어떤 브랜드나 제품의 좋은 점, 특징을 글로 설득력 있게 풀어쓰는 게 재미있다',
+        desc: '제품 설명, 소개 글, 리뷰 등을 쓸 때 자연스럽게 잘 쓴다',
+        jd: '상품 기획서, 자기소개서, 제안서 작성 역량',
+        w: { performance:0, content:3, brand:2, growth:0, crm:1, ae:2 }
       },
     ]
   },
   {
-    category: '📢 광고 & 채널 운영',
+    category: '📢 광고 & 채널',
+    sub: 'JD 키워드: 메타 광고, 구글 Ads, 매체 운영, 예산 배분, 소재 테스트',
     items: [
       {
-        id: 'ad_operation', name: '광고 매체 직접 운영',
-        desc: '메타, 구글, 카카오, 틱톡 등 디지털 광고 매체를 직접 집행해봤다',
-        w: { performance:3, content:1, brand:1, growth:2, crm:1, ae:2 }
+        id: 'c11', tag: 'interest',
+        name: '메타(인스타·페북), 구글, 카카오 등 광고 매체를 직접 운영해보고 싶다',
+        desc: '광고를 집행하고 성과를 확인하는 과정에 흥미가 있다',
+        jd: '광고 매체 운영, 캠페인 집행 경험',
+        w: { performance:3, content:1, brand:1, growth:1, crm:0, ae:3 }
       },
       {
-        id: 'sns_operation', name: 'SNS 채널 운영',
-        desc: '인스타그램, 유튜브, 블로그 등 SNS 계정을 기획하고 운영한 경험이 있다',
+        id: 'c12', tag: 'enjoy',
+        name: '같은 광고비로 어떻게 하면 더 많은 사람에게 닿을 수 있을지 고민하는 게 재미있다',
+        desc: '효율적인 예산 배분과 매체 선택에 관심이 있다',
+        jd: '매체 전략 수립, 예산 최적화',
+        w: { performance:3, content:0, brand:0, growth:2, crm:0, ae:3 }
+      },
+      {
+        id: 'c13', tag: 'interest',
+        name: '광고 소재(이미지, 영상, 카피)가 왜 어떤 건 잘 되고 어떤 건 안 되는지 궁금하다',
+        desc: '위닝 소재가 무엇인지, 어떤 메시지가 효과적인지 분석하고 싶다',
+        jd: '광고 소재 기획·테스트, 위닝 소재 분석',
+        w: { performance:3, content:2, brand:2, growth:1, crm:0, ae:2 }
+      },
+      {
+        id: 'c14', tag: 'exp',
+        name: 'SNS 계정(인스타, 블로그, 유튜브 등)을 꾸준히 운영해본 적이 있다',
+        desc: '팔로워 증가, 조회수 분석 등을 경험해봤다',
+        jd: 'SNS 채널 운영 및 성장 경험',
         w: { performance:1, content:3, brand:2, growth:1, crm:1, ae:2 }
       },
-      {
-        id: 'media_budget', name: '매체 전략 & 예산 배분',
-        desc: '목표에 맞는 광고 채널을 선택하고 예산을 효율적으로 배분할 수 있다',
-        w: { performance:3, content:1, brand:1, growth:2, crm:1, ae:3 }
-      },
     ]
   },
   {
-    category: '🎯 전략 & 기획',
+    category: '🎯 전략 & 브랜드',
+    sub: 'JD 키워드: 브랜드 전략, 캠페인 기획, 포지셔닝, 톤앤매너, 타겟 설정',
     items: [
       {
-        id: 'campaign_plan', name: '캠페인 기획 & 실행',
-        desc: '마케팅 캠페인의 목표-전략-실행-회고까지 한 사이클을 경험했다',
-        w: { performance:2, content:1, brand:3, growth:1, crm:1, ae:3 }
-      },
-      {
-        id: 'brand_strategy', name: '브랜드 전략 & 아이덴티티 설계',
-        desc: '브랜드 포지셔닝, 톤앤매너, 페르소나 등을 설계할 수 있다',
+        id: 'c15', tag: 'enjoy',
+        name: '브랜드가 어떤 이미지를 갖고 있는지, 왜 사람들이 그 브랜드를 좋아하는지 분석하는 게 재미있다',
+        desc: '브랜드의 감성, 톤앤매너, 아이덴티티에 관심이 많다',
+        jd: '브랜드 전략, 포지셔닝, 브랜드 아이덴티티 설계',
         w: { performance:0, content:2, brand:3, growth:0, crm:1, ae:2 }
       },
       {
-        id: 'project_manage', name: '프로젝트 관리 & 일정 조율',
-        desc: '복수의 업무를 동시에 관리하고 데드라인을 조율할 수 있다',
-        w: { performance:1, content:1, brand:2, growth:2, crm:2, ae:3 }
+        id: 'c16', tag: 'good',
+        name: '어떤 제품이나 서비스가 "누구에게" "어떤 메시지"로 광고해야 할지 떠올리는 걸 잘한다',
+        desc: '타겟 설정과 핵심 메시지 도출에 감각이 있다',
+        jd: '타겟 분석, 메시지 전략 수립',
+        w: { performance:2, content:1, brand:3, growth:1, crm:1, ae:3 }
+      },
+      {
+        id: 'c17', tag: 'interest',
+        name: '하나의 캠페인을 처음부터 끝까지(기획→실행→성과 측정→회고) 진행해보고 싶다',
+        desc: '전체 프로세스를 한 사이클 경험하는 것에 관심이 있다',
+        jd: '캠페인 기획·운영 역량, 프로젝트 완수 경험',
+        w: { performance:1, content:1, brand:3, growth:1, crm:1, ae:3 }
+      },
+      {
+        id: 'c18', tag: 'good',
+        name: '여러 가지 아이디어 중 "이게 더 맞다"는 감각으로 방향을 잡는 편이다',
+        desc: '크리에이티브 디렉션, 기획안 선택에 감각이 있다',
+        jd: '크리에이티브 기획, 캠페인 아이디어 발굴',
+        w: { performance:0, content:2, brand:3, growth:0, crm:0, ae:2 }
       },
     ]
   },
   {
-    category: '👥 고객 & 관계',
+    category: '📈 성장 & 실험',
+    sub: 'JD 키워드: 퍼널 분석, 리텐션, 전환율, 실험 설계, 그로스 해킹',
     items: [
       {
-        id: 'customer_journey', name: '고객 여정 분석 & 페르소나 설계',
-        desc: '타겟 고객의 행동 패턴과 니즈를 분석하여 전략에 반영할 수 있다',
-        w: { performance:1, content:2, brand:2, growth:3, crm:3, ae:1 }
+        id: 'c19', tag: 'interest',
+        name: '사람들이 앱이나 웹사이트에서 어떤 경로로 구매까지 가는지 흐름을 파악하고 싶다',
+        desc: '유입 → 탐색 → 구매의 퍼널 흐름에 관심이 있다',
+        jd: '퍼널 분석, 전환율 개선, 이탈 지점 파악',
+        w: { performance:2, content:0, brand:0, growth:3, crm:2, ae:0 }
       },
       {
-        id: 'crm_tool', name: 'CRM 툴 & 메시지 자동화',
-        desc: '이메일, 앱 푸시, 문자 등 고객 메시지 자동화를 설정해봤다',
-        w: { performance:0, content:1, brand:0, growth:2, crm:3, ae:0 }
+        id: 'c20', tag: 'enjoy',
+        name: '"왜 이 사람들은 결제를 안 하고 나갈까?" 같은 문제를 구조적으로 파고드는 게 재미있다',
+        desc: '문제를 찾고 가설을 세워 해결하는 과정이 즐겁다',
+        jd: '그로스 해킹, 문제 정의 및 해결 역량',
+        w: { performance:1, content:0, brand:0, growth:3, crm:2, ae:0 }
       },
       {
-        id: 'client_comm', name: '클라이언트 커뮤니케이션 & 제안',
-        desc: '고객사 또는 이해관계자에게 기획안을 발표하고 설득할 수 있다',
+        id: 'c21', tag: 'interest',
+        name: '한 번 구매한 고객이 다시 오게 만드는 전략(리텐션)에 관심이 있다',
+        desc: '재구매율, 이탈 방지, 고객 유지 전략을 고민하는 게 흥미롭다',
+        jd: '리텐션 전략, 재방문율 개선',
+        w: { performance:1, content:0, brand:0, growth:3, crm:3, ae:0 }
+      },
+    ]
+  },
+  {
+    category: '👥 고객 & CRM',
+    sub: 'JD 키워드: 고객 세그먼트, 개인화 메시지, 이메일·앱푸시, 고객 여정',
+    items: [
+      {
+        id: 'c22', tag: 'enjoy',
+        name: '"어떤 사람에게 어떤 말을 어떤 타이밍에 보내야 할까?"를 고민하는 게 재미있다',
+        desc: '메시지의 내용, 시점, 대상을 맞추는 것에 관심이 있다',
+        jd: 'CRM 메시지 설계, 고객 여정 기반 마케팅',
+        w: { performance:0, content:1, brand:1, growth:2, crm:3, ae:0 }
+      },
+      {
+        id: 'c23', tag: 'interest',
+        name: '고객을 특성별로 나눠서(세그먼트) 다르게 접근하는 전략을 배워보고 싶다',
+        desc: '같은 제품도 20대 여성에게 다르게, 30대 남성에게 다르게 전달하는 방식이 흥미롭다',
+        jd: '고객 세그먼테이션, 타겟별 개인화 전략',
+        w: { performance:1, content:0, brand:1, growth:2, crm:3, ae:0 }
+      },
+      {
+        id: 'c24', tag: 'good',
+        name: '상대방이 무엇을 필요로 하는지 파악하고 그에 맞게 대화하는 편이다',
+        desc: '공감 능력, 니즈 파악, 상황에 맞는 커뮤니케이션을 잘한다',
+        jd: '고객 케어, 클라이언트 커뮤니케이션, 제안 역량',
+        w: { performance:0, content:1, brand:1, growth:0, crm:3, ae:3 }
+      },
+    ]
+  },
+  {
+    category: '🤝 협업 & 프로젝트',
+    sub: 'JD 키워드: 클라이언트 대응, 제안서, 다중 프로젝트, 주도적 실행',
+    items: [
+      {
+        id: 'c25', tag: 'good',
+        name: '여러 일을 동시에 관리하면서 마감을 맞추는 것을 잘한다',
+        desc: '우선순위를 정하고 멀티태스킹하는 것이 어렵지 않다',
+        jd: '다중 프로젝트 관리, 일정 조율 역량',
+        w: { performance:1, content:1, brand:1, growth:1, crm:1, ae:3 }
+      },
+      {
+        id: 'c26', tag: 'enjoy',
+        name: '다양한 산업, 다양한 브랜드를 경험하면서 폭넓게 배우는 게 재미있다',
+        desc: '한 곳만 깊게 파기보다 여러 클라이언트와 일하는 환경이 맞는다',
+        jd: '대행사 AE, 다양한 클라이언트 경험 선호',
+        w: { performance:1, content:1, brand:1, growth:0, crm:0, ae:3 }
+      },
+      {
+        id: 'c27', tag: 'good',
+        name: '기획한 내용을 발표하거나 글로 설득력 있게 전달하는 것을 잘한다',
+        desc: '제안서, 보고서, 프레젠테이션 등 설득 커뮤니케이션에 자신이 있다',
+        jd: '제안서 작성, 클라이언트 프레젠테이션',
         w: { performance:0, content:1, brand:2, growth:0, crm:1, ae:3 }
       },
       {
-        id: 'retention', name: '리텐션 & 재구매 전략',
-        desc: '기존 고객이 다시 돌아오도록 하는 전략을 설계하거나 실행해봤다',
-        w: { performance:1, content:1, brand:1, growth:3, crm:3, ae:0 }
+        id: 'c28', tag: 'enjoy',
+        name: '팀원들과 아이디어를 나누고 함께 결과물을 만들어 가는 과정이 즐겁다',
+        desc: '협업, 의견 조율, 팀 프로젝트를 좋아한다',
+        jd: '팀 협업, 크로스펑셔널 커뮤니케이션',
+        w: { performance:1, content:2, brand:2, growth:1, crm:2, ae:3 }
+      },
+    ]
+  },
+  {
+    category: '🛠️ 툴 & 실무 감각',
+    sub: 'JD 키워드: AI 툴 활용, 디자인 툴, 스프레드시트, 데이터 시각화',
+    items: [
+      {
+        id: 'c29', tag: 'exp',
+        name: 'AI 툴(ChatGPT, 미드저니 등)을 마케팅이나 콘텐츠 제작에 활용해본 적이 있다',
+        desc: 'AI를 활용해 카피, 이미지, 기획안 등을 만들어본 경험이 있다',
+        jd: 'AI 툴 활용 능력 (대부분 JD에 등장)',
+        w: { performance:2, content:3, brand:2, growth:2, crm:1, ae:2 }
+      },
+      {
+        id: 'c30', tag: 'exp',
+        name: '피그마, 캔바, 포토샵 등 디자인 툴로 시각 자료를 직접 만들어본 적이 있다',
+        desc: '카드뉴스, 썸네일, 배너 등 간단한 디자인을 혼자 제작해봤다',
+        jd: '디자인 툴 활용 역량, 소재 제작 경험',
+        w: { performance:1, content:3, brand:2, growth:0, crm:0, ae:1 }
       },
     ]
   },
 ];
 
-// Pre-compute max scores per job
+// Tag config
+const TAG_CONFIG = {
+  interest: { cls: 'tag-interest', label: '관심있다' },
+  good:     { cls: 'tag-good',     label: '잘한다'   },
+  enjoy:    { cls: 'tag-enjoy',    label: '재미있다'  },
+  exp:      { cls: 'tag-exp',      label: '경험있다'  },
+};
+
+// Max scores
 const MAX = {};
 JOBS.forEach(j => {
   MAX[j.id] = COMPETENCIES.flatMap(c => c.items).reduce((s, item) => s + item.w[j.id], 0);
 });
 
-// ─── Render checklist ───────────────────────────────────────────
+const TOTAL = COMPETENCIES.flatMap(c => c.items).length;
+
+// Render checklist
 function renderChecklist() {
   const panel = document.getElementById('checklist');
   COMPETENCIES.forEach(cat => {
     const wrap = document.createElement('div');
     wrap.className = 'category';
+
     const title = document.createElement('div');
     title.className = 'category-title';
-    title.textContent = cat.category;
+    title.innerHTML = `${cat.category} <span class="category-sub">${cat.sub}</span>`;
     wrap.appendChild(title);
 
     cat.items.forEach(item => {
-      const label = document.createElement('label');
-      label.className = 'competency-item';
-      label.innerHTML = `
+      const tc = TAG_CONFIG[item.tag];
+      const lbl = document.createElement('label');
+      lbl.className = 'competency-item';
+      lbl.innerHTML = `
         <input type="checkbox" id="${item.id}">
         <div class="comp-label">
+          <span class="comp-tag ${tc.cls}">${tc.label}</span>
           <div class="comp-name">${item.name}</div>
           <div class="comp-desc">${item.desc}</div>
+          <div class="comp-jd">📌 JD 반영: ${item.jd}</div>
         </div>`;
-      label.querySelector('input').addEventListener('change', update);
-      wrap.appendChild(label);
+      lbl.querySelector('input').addEventListener('change', update);
+      wrap.appendChild(lbl);
     });
     panel.appendChild(wrap);
   });
 }
 
-// ─── Calculate scores ───────────────────────────────────────────
 function getScores() {
   const scores = {};
   JOBS.forEach(j => scores[j.id] = 0);
   COMPETENCIES.flatMap(c => c.items).forEach(item => {
-    if (document.getElementById(item.id)?.checked) {
+    if (document.getElementById(item.id)?.checked)
       JOBS.forEach(j => scores[j.id] += item.w[j.id]);
-    }
   });
   return scores;
 }
@@ -446,9 +640,7 @@ function getNorm(scores) {
   return n;
 }
 
-// ─── Update UI ──────────────────────────────────────────────────
 function update() {
-  // Sync checked style
   let count = 0;
   COMPETENCIES.flatMap(c => c.items).forEach(item => {
     const el = document.getElementById(item.id);
@@ -460,17 +652,15 @@ function update() {
 
   const scores = getScores();
   const norm   = getNorm(scores);
-
   drawRadar(norm);
   renderBars(norm);
   renderTopPick(norm, count);
 }
 
-// ─── Radar chart ────────────────────────────────────────────────
 function drawRadar(norm) {
   const svg = document.getElementById('radar');
   svg.innerHTML = '';
-  const cx = 150, cy = 150, R = 104, n = JOBS.length;
+  const cx = 150, cy = 150, R = 100, n = JOBS.length;
   const angle = i => (Math.PI * 2 * i / n) - Math.PI / 2;
   const pt    = (i, r) => [cx + r * Math.cos(angle(i)), cy + r * Math.sin(angle(i))];
   const poly  = (pts, fill, stroke, sw) => {
@@ -482,38 +672,32 @@ function drawRadar(norm) {
     return el;
   };
 
-  // Grid rings
-  [0.25, 0.5, 0.75, 1].forEach(lv => {
-    svg.appendChild(poly(JOBS.map((_, i) => pt(i, R * lv)), 'none', '#E5E7EB', '1'));
-  });
+  [0.25, 0.5, 0.75, 1].forEach(lv =>
+    svg.appendChild(poly(JOBS.map((_, i) => pt(i, R * lv)), 'none', '#E5E7EB', '1')));
 
-  // Axis lines
   JOBS.forEach((_, i) => {
     const [x2, y2] = pt(i, R);
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    ['x1','y1','x2','y2','stroke','stroke-width'].forEach((a,idx) =>
-      line.setAttribute(a, [cx, cy, x2, y2, '#E5E7EB', '1'][idx]));
+    Object.entries({ x1: cx, y1: cy, x2, y2, stroke: '#E5E7EB', 'stroke-width': 1 })
+      .forEach(([k, v]) => line.setAttribute(k, v));
     svg.appendChild(line);
   });
 
-  // Data polygon
   svg.appendChild(poly(
     JOBS.map((j, i) => pt(i, R * norm[j.id])),
     'rgba(79,70,229,0.18)', '#4F46E5', '2'
   ));
 
-  // Dots on data
   JOBS.forEach((j, i) => {
     const [dx, dy] = pt(i, R * norm[j.id]);
     const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     c.setAttribute('cx', dx); c.setAttribute('cy', dy);
-    c.setAttribute('r', '4'); c.setAttribute('fill', '#4F46E5');
+    c.setAttribute('r', 4); c.setAttribute('fill', '#4F46E5');
     svg.appendChild(c);
   });
 
-  // Labels
   JOBS.forEach((job, i) => {
-    const [lx, ly] = pt(i, R + 24);
+    const [lx, ly] = pt(i, R + 26);
     const lines = job.name.split('\n');
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text.setAttribute('text-anchor', 'middle');
@@ -522,17 +706,16 @@ function drawRadar(norm) {
     text.setAttribute('fill', job.color);
     text.setAttribute('font-family', 'Apple SD Gothic Neo, Noto Sans KR, sans-serif');
     lines.forEach((line, li) => {
-      const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-      tspan.setAttribute('x', lx);
-      tspan.setAttribute('dy', li === 0 ? (lines.length > 1 ? `-${(lines.length-1)*6}` : '4') : '13');
-      tspan.textContent = line;
-      text.appendChild(tspan);
+      const ts = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+      ts.setAttribute('x', lx);
+      ts.setAttribute('dy', li === 0 ? (lines.length > 1 ? `-${(lines.length-1)*6}` : '4') : '13');
+      ts.textContent = line;
+      text.appendChild(ts);
     });
     svg.appendChild(text);
   });
 }
 
-// ─── Bars ────────────────────────────────────────────────────────
 function renderBars(norm) {
   const sorted = [...JOBS].sort((a, b) => norm[b.id] - norm[a.id]);
   document.getElementById('job-bars').innerHTML = sorted.map(job => {
@@ -549,12 +732,11 @@ function renderBars(norm) {
   }).join('');
 }
 
-// ─── Top pick ────────────────────────────────────────────────────
 function renderTopPick(norm, count) {
   const top = JOBS.reduce((a, b) => norm[a.id] >= norm[b.id] ? a : b);
   const pct = Math.round(norm[top.id] * 100);
   if (count === 0) {
-    document.getElementById('top-job').textContent = '역량을 선택해주세요';
+    document.getElementById('top-job').textContent = '항목을 선택해주세요';
     document.getElementById('top-job').style.color = '#4338CA';
     document.getElementById('top-reason').textContent = '체크할수록 결과가 정확해집니다';
   } else {
@@ -565,7 +747,6 @@ function renderTopPick(norm, count) {
   }
 }
 
-// ─── Reset ───────────────────────────────────────────────────────
 function resetAll() {
   COMPETENCIES.flatMap(c => c.items).forEach(item => {
     const el = document.getElementById(item.id);
@@ -574,7 +755,6 @@ function resetAll() {
   update();
 }
 
-// Init
 renderChecklist();
 update();
 </script>
