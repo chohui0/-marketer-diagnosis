@@ -697,18 +697,23 @@ function drawRadar(norm) {
   });
 
   JOBS.forEach((job, i) => {
-    const [lx, ly] = pt(i, R + 26);
+    const [lx, ly] = pt(i, R + 28);
     const lines = job.name.split('\n');
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', lx);
+    text.setAttribute('y', ly);
     text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
     text.setAttribute('font-size', '10');
     text.setAttribute('font-weight', '700');
     text.setAttribute('fill', job.color);
     text.setAttribute('font-family', 'Apple SD Gothic Neo, Noto Sans KR, sans-serif');
+    const lineH = 13;
+    const totalH = (lines.length - 1) * lineH;
     lines.forEach((line, li) => {
       const ts = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
       ts.setAttribute('x', lx);
-      ts.setAttribute('dy', li === 0 ? (lines.length > 1 ? `-${(lines.length-1)*6}` : '4') : '13');
+      ts.setAttribute('dy', li === 0 ? -totalH / 2 : lineH);
       ts.textContent = line;
       text.appendChild(ts);
     });
