@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나는 어떤 마케터일까? | 직무 적합도 진단</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    background: #F5F5F7;
+    color: #1d1d1f;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #fff;
+    padding: 36px 24px 28px;
+    text-align: center;
+    border-bottom: 1px solid #e5e5ea;
+  }
+  header .badge {
+    display: inline-block;
+    background: #EEF2FF;
+    color: #4F46E5;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    letter-spacing: 0.3px;
+  }
+  header h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  header p { font-size: 14px; color: #6e6e73; line-height: 1.6; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 28px 16px; }
+
+  .layout { display: flex; gap: 20px; align-items: flex-start; }
+
+  /* Checklist */
+  .checklist-panel { flex: 1; min-width: 0; }
+
+  .category {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .category-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #3c3c43;
+    margin-bottom: 4px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f2f2f7;
+  }
+
+  .competency-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 6px;
+    border-bottom: 1px solid #f2f2f7;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .competency-item:last-child { border-bottom: none; }
+  .competency-item:hover { background: #F5F5F7; }
+  .competency-item.checked { background: #EEF2FF; }
+
+  .competency-item input[type="checkbox"] {
+    margin-top: 2px;
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+    accent-color: #4F46E5;
+    flex-shrink: 0;
+  }
+  .comp-label { flex: 1; }
+  .comp-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    color: #1d1d1f;
+    transition: color 0.15s;
+  }
+  .competency-item.checked .comp-name { color: #4F46E5; }
+  .comp-desc { font-size: 12px; color: #8e8e93; line-height: 1.5; }
+
+  /* Result panel */
+  .result-panel {
+    width: 340px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 20px;
+  }
+
+  .result-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 14px;
+  }
+  .result-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #3c3c43;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  #radar-container { display: flex; justify-content: center; }
+
+  .reco-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .progress-text {
+    text-align: center;
+    font-size: 12px;
+    color: #8e8e93;
+    margin-bottom: 14px;
+  }
+  .progress-text span { color: #4F46E5; font-weight: 700; }
+
+  .top-pick {
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    text-align: center;
+    border: 1.5px solid #C7D2FE;
+    background: #EEF2FF;
+  }
+  .top-pick .pick-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6366F1;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+  }
+  .top-pick .pick-job {
+    font-size: 19px;
+    font-weight: 800;
+    color: #4338CA;
+    margin-bottom: 5px;
+    transition: color 0.3s;
+  }
+  .top-pick .pick-reason {
+    font-size: 12px;
+    color: #6366F1;
+    line-height: 1.5;
+  }
+
+  .bars-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #3c3c43;
+    margin-bottom: 12px;
+  }
+
+  .job-bar { margin-bottom: 11px; }
+  .job-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  .job-name { font-size: 13px; font-weight: 600; }
+  .job-pct  { font-size: 12px; color: #8e8e93; }
+  .bar-track {
+    background: #f2f2f7;
+    border-radius: 6px;
+    height: 7px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 7px;
+    border-radius: 6px;
+    transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
+    min-width: 0;
+  }
+
+  .reset-btn {
+    width: 100%;
+    margin-top: 16px;
+    padding: 10px;
+    background: #f2f2f7;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6e6e73;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .reset-btn:hover { background: #e5e5ea; }
+
+  @media (max-width: 720px) {
+    .layout { flex-direction: column; }
+    .result-panel { width: 100%; position: static; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">디지털 마케터 부트캠프</div>
+  <h1>나는 어떤 마케터일까? 🎯</h1>
+  <p>해당되는 역량을 모두 체크하세요.<br>레이더 차트로 나의 직무 적합도를 바로 확인할 수 있습니다.</p>
+</header>
+
+<div class="container">
+  <div class="layout">
+
+    <div class="checklist-panel" id="checklist"></div>
+
+    <div class="result-panel">
+      <div class="result-card">
+        <h3>📊 직무 적합도 레이더</h3>
+        <div id="radar-container">
+          <svg id="radar" width="300" height="300" viewBox="0 0 300 300"></svg>
+        </div>
+      </div>
+
+      <div class="reco-card">
+        <div class="progress-text"><span id="checked-count">0</span>개 역량 선택됨</div>
+
+        <div class="top-pick">
+          <div class="pick-label">✨ 가장 잘 맞는 직무</div>
+          <div class="pick-job" id="top-job">역량을 선택해주세요</div>
+          <div class="pick-reason" id="top-reason">체크할수록 결과가 정확해집니다</div>
+        </div>
+
+        <div class="bars-title">직무별 적합도</div>
+        <div id="job-bars"></div>
+
+        <button class="reset-btn" onclick="resetAll()">↺ 초기화</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const JOBS = [
+  { id: 'performance', name: '퍼포먼스\n마케터',  short: '퍼포먼스 마케터',  color: '#EF4444' },
+  { id: 'content',     name: '콘텐츠\n마케터',    short: '콘텐츠 마케터',    color: '#F59E0B' },
+  { id: 'brand',       name: '브랜드\n마케터',    short: '브랜드 마케터',    color: '#8B5CF6' },
+  { id: 'growth',      name: '그로스\n마케터',    short: '그로스 마케터',    color: '#10B981' },
+  { id: 'crm',         name: 'CRM\n마케터',       short: 'CRM 마케터',       color: '#3B82F6' },
+  { id: 'ae',          name: 'AE\n(대행사)',      short: 'AE (대행사)',      color: '#EC4899' },
+];
+
+const JOB_REASONS = {
+  performance: '광고 운영·데이터 분석 역량이 뛰어납니다',
+  content:     '콘텐츠 제작·트렌드 감각이 돋보입니다',
+  brand:       '브랜드 전략·크리에이티브 기획이 강점입니다',
+  growth:      '데이터 기반 실험·퍼널 분석 역량이 높습니다',
+  crm:         '고객 분석·관계 관리 역량이 강점입니다',
+  ae:          '기획력·클라이언트 커뮤니케이션이 뛰어납니다',
+};
+
+const COMPETENCIES = [
+  {
+    category: '📊 데이터 & 분석',
+    items: [
+      {
+        id: 'data_read', name: '데이터 읽기 & 지표 해석',
+        desc: 'CTR, CVR, ROAS, CPA 등 마케팅 지표를 이해하고 해석할 수 있다',
+        w: { performance:3, content:1, brand:1, growth:3, crm:3, ae:2 }
+      },
+      {
+        id: 'tool_analytics', name: '분석 툴 활용 (GA4 등)',
+        desc: 'GA4, 네이버 애널리틱스, 믹스패널 등 데이터 분석 툴을 사용할 수 있다',
+        w: { performance:3, content:1, brand:0, growth:3, crm:2, ae:1 }
+      },
+      {
+        id: 'ab_test', name: 'A/B 테스트 & 실험 설계',
+        desc: '가설을 세우고 실험을 설계하여 결과를 분석한 경험이 있다',
+        w: { performance:2, content:1, brand:0, growth:3, crm:2, ae:1 }
+      },
+      {
+        id: 'funnel', name: '퍼널 분석 & 전환율 개선',
+        desc: '유입→전환→이탈 흐름을 분석하고 병목 지점을 찾아낼 수 있다',
+        w: { performance:2, content:0, brand:0, growth:3, crm:2, ae:1 }
+      },
+      {
+        id: 'report', name: '성과 보고 & 인사이트 도출',
+        desc: '데이터를 정리하여 의미 있는 인사이트를 뽑아 보고서로 작성할 수 있다',
+        w: { performance:2, content:1, brand:1, growth:3, crm:2, ae:2 }
+      },
+    ]
+  },
+  {
+    category: '✍️ 콘텐츠 & 크리에이티브',
+    items: [
+      {
+        id: 'copywriting', name: '카피라이팅 & 스토리텔링',
+        desc: '사람의 감정을 건드리는 문구와 이야기를 만들 수 있다',
+        w: { performance:1, content:3, brand:3, growth:1, crm:2, ae:2 }
+      },
+      {
+        id: 'content_create', name: '콘텐츠 기획 & 제작',
+        desc: '블로그, SNS, 숏폼 영상 등 다양한 포맷의 콘텐츠를 기획하고 만들 수 있다',
+        w: { performance:1, content:3, brand:2, growth:1, crm:2, ae:2 }
+      },
+      {
+        id: 'design_tool', name: '디자인 툴 활용 (피그마·캔바 등)',
+        desc: '피그마, 포토샵, 캔바 등으로 시각 자료를 직접 제작할 수 있다',
+        w: { performance:1, content:2, brand:2, growth:0, crm:1, ae:1 }
+      },
+      {
+        id: 'creative_idea', name: '광고 소재 기획',
+        desc: '광고 소재의 메시지와 비주얼 방향을 기획할 수 있다',
+        w: { performance:2, content:2, brand:3, growth:1, crm:1, ae:2 }
+      },
+      {
+        id: 'trend', name: '트렌드 리서치 & 시장 분석',
+        desc: '시장과 소비자 트렌드를 빠르게 감지하고 전략에 반영할 수 있다',
+        w: { performance:1, content:3, brand:3, growth:1, crm:1, ae:2 }
+      },
+    ]
+  },
+  {
+    category: '📢 광고 & 채널 운영',
+    items: [
+      {
+        id: 'ad_operation', name: '광고 매체 직접 운영',
+        desc: '메타, 구글, 카카오, 틱톡 등 디지털 광고 매체를 직접 집행해봤다',
+        w: { performance:3, content:1, brand:1, growth:2, crm:1, ae:2 }
+      },
+      {
+        id: 'sns_operation', name: 'SNS 채널 운영',
+        desc: '인스타그램, 유튜브, 블로그 등 SNS 계정을 기획하고 운영한 경험이 있다',
+        w: { performance:1, content:3, brand:2, growth:1, crm:1, ae:2 }
+      },
+      {
+        id: 'media_budget', name: '매체 전략 & 예산 배분',
+        desc: '목표에 맞는 광고 채널을 선택하고 예산을 효율적으로 배분할 수 있다',
+        w: { performance:3, content:1, brand:1, growth:2, crm:1, ae:3 }
+      },
+    ]
+  },
+  {
+    category: '🎯 전략 & 기획',
+    items: [
+      {
+        id: 'campaign_plan', name: '캠페인 기획 & 실행',
+        desc: '마케팅 캠페인의 목표-전략-실행-회고까지 한 사이클을 경험했다',
+        w: { performance:2, content:1, brand:3, growth:1, crm:1, ae:3 }
+      },
+      {
+        id: 'brand_strategy', name: '브랜드 전략 & 아이덴티티 설계',
+        desc: '브랜드 포지셔닝, 톤앤매너, 페르소나 등을 설계할 수 있다',
+        w: { performance:0, content:2, brand:3, growth:0, crm:1, ae:2 }
+      },
+      {
+        id: 'project_manage', name: '프로젝트 관리 & 일정 조율',
+        desc: '복수의 업무를 동시에 관리하고 데드라인을 조율할 수 있다',
+        w: { performance:1, content:1, brand:2, growth:2, crm:2, ae:3 }
+      },
+    ]
+  },
+  {
+    category: '👥 고객 & 관계',
+    items: [
+      {
+        id: 'customer_journey', name: '고객 여정 분석 & 페르소나 설계',
+        desc: '타겟 고객의 행동 패턴과 니즈를 분석하여 전략에 반영할 수 있다',
+        w: { performance:1, content:2, brand:2, growth:3, crm:3, ae:1 }
+      },
+      {
+        id: 'crm_tool', name: 'CRM 툴 & 메시지 자동화',
+        desc: '이메일, 앱 푸시, 문자 등 고객 메시지 자동화를 설정해봤다',
+        w: { performance:0, content:1, brand:0, growth:2, crm:3, ae:0 }
+      },
+      {
+        id: 'client_comm', name: '클라이언트 커뮤니케이션 & 제안',
+        desc: '고객사 또는 이해관계자에게 기획안을 발표하고 설득할 수 있다',
+        w: { performance:0, content:1, brand:2, growth:0, crm:1, ae:3 }
+      },
+      {
+        id: 'retention', name: '리텐션 & 재구매 전략',
+        desc: '기존 고객이 다시 돌아오도록 하는 전략을 설계하거나 실행해봤다',
+        w: { performance:1, content:1, brand:1, growth:3, crm:3, ae:0 }
+      },
+    ]
+  },
+];
+
+// Pre-compute max scores per job
+const MAX = {};
+JOBS.forEach(j => {
+  MAX[j.id] = COMPETENCIES.flatMap(c => c.items).reduce((s, item) => s + item.w[j.id], 0);
+});
+
+// ─── Render checklist ───────────────────────────────────────────
+function renderChecklist() {
+  const panel = document.getElementById('checklist');
+  COMPETENCIES.forEach(cat => {
+    const wrap = document.createElement('div');
+    wrap.className = 'category';
+    const title = document.createElement('div');
+    title.className = 'category-title';
+    title.textContent = cat.category;
+    wrap.appendChild(title);
+
+    cat.items.forEach(item => {
+      const label = document.createElement('label');
+      label.className = 'competency-item';
+      label.innerHTML = `
+        <input type="checkbox" id="${item.id}">
+        <div class="comp-label">
+          <div class="comp-name">${item.name}</div>
+          <div class="comp-desc">${item.desc}</div>
+        </div>`;
+      label.querySelector('input').addEventListener('change', update);
+      wrap.appendChild(label);
+    });
+    panel.appendChild(wrap);
+  });
+}
+
+// ─── Calculate scores ───────────────────────────────────────────
+function getScores() {
+  const scores = {};
+  JOBS.forEach(j => scores[j.id] = 0);
+  COMPETENCIES.flatMap(c => c.items).forEach(item => {
+    if (document.getElementById(item.id)?.checked) {
+      JOBS.forEach(j => scores[j.id] += item.w[j.id]);
+    }
+  });
+  return scores;
+}
+
+function getNorm(scores) {
+  const n = {};
+  JOBS.forEach(j => n[j.id] = MAX[j.id] ? scores[j.id] / MAX[j.id] : 0);
+  return n;
+}
+
+// ─── Update UI ──────────────────────────────────────────────────
+function update() {
+  // Sync checked style
+  let count = 0;
+  COMPETENCIES.flatMap(c => c.items).forEach(item => {
+    const el = document.getElementById(item.id);
+    if (!el) return;
+    el.closest('.competency-item').classList.toggle('checked', el.checked);
+    if (el.checked) count++;
+  });
+  document.getElementById('checked-count').textContent = count;
+
+  const scores = getScores();
+  const norm   = getNorm(scores);
+
+  drawRadar(norm);
+  renderBars(norm);
+  renderTopPick(norm, count);
+}
+
+// ─── Radar chart ────────────────────────────────────────────────
+function drawRadar(norm) {
+  const svg = document.getElementById('radar');
+  svg.innerHTML = '';
+  const cx = 150, cy = 150, R = 104, n = JOBS.length;
+  const angle = i => (Math.PI * 2 * i / n) - Math.PI / 2;
+  const pt    = (i, r) => [cx + r * Math.cos(angle(i)), cy + r * Math.sin(angle(i))];
+  const poly  = (pts, fill, stroke, sw) => {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    el.setAttribute('points', pts.map(p => p.join(',')).join(' '));
+    el.setAttribute('fill', fill);
+    el.setAttribute('stroke', stroke);
+    el.setAttribute('stroke-width', sw);
+    return el;
+  };
+
+  // Grid rings
+  [0.25, 0.5, 0.75, 1].forEach(lv => {
+    svg.appendChild(poly(JOBS.map((_, i) => pt(i, R * lv)), 'none', '#E5E7EB', '1'));
+  });
+
+  // Axis lines
+  JOBS.forEach((_, i) => {
+    const [x2, y2] = pt(i, R);
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    ['x1','y1','x2','y2','stroke','stroke-width'].forEach((a,idx) =>
+      line.setAttribute(a, [cx, cy, x2, y2, '#E5E7EB', '1'][idx]));
+    svg.appendChild(line);
+  });
+
+  // Data polygon
+  svg.appendChild(poly(
+    JOBS.map((j, i) => pt(i, R * norm[j.id])),
+    'rgba(79,70,229,0.18)', '#4F46E5', '2'
+  ));
+
+  // Dots on data
+  JOBS.forEach((j, i) => {
+    const [dx, dy] = pt(i, R * norm[j.id]);
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', dx); c.setAttribute('cy', dy);
+    c.setAttribute('r', '4'); c.setAttribute('fill', '#4F46E5');
+    svg.appendChild(c);
+  });
+
+  // Labels
+  JOBS.forEach((job, i) => {
+    const [lx, ly] = pt(i, R + 24);
+    const lines = job.name.split('\n');
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('font-size', '10');
+    text.setAttribute('font-weight', '700');
+    text.setAttribute('fill', job.color);
+    text.setAttribute('font-family', 'Apple SD Gothic Neo, Noto Sans KR, sans-serif');
+    lines.forEach((line, li) => {
+      const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+      tspan.setAttribute('x', lx);
+      tspan.setAttribute('dy', li === 0 ? (lines.length > 1 ? `-${(lines.length-1)*6}` : '4') : '13');
+      tspan.textContent = line;
+      text.appendChild(tspan);
+    });
+    svg.appendChild(text);
+  });
+}
+
+// ─── Bars ────────────────────────────────────────────────────────
+function renderBars(norm) {
+  const sorted = [...JOBS].sort((a, b) => norm[b.id] - norm[a.id]);
+  document.getElementById('job-bars').innerHTML = sorted.map(job => {
+    const pct = Math.round(norm[job.id] * 100);
+    return `<div class="job-bar">
+      <div class="job-bar-header">
+        <span class="job-name" style="color:${job.color}">${job.short}</span>
+        <span class="job-pct">${pct}%</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${pct}%;background:${job.color}"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Top pick ────────────────────────────────────────────────────
+function renderTopPick(norm, count) {
+  const top = JOBS.reduce((a, b) => norm[a.id] >= norm[b.id] ? a : b);
+  const pct = Math.round(norm[top.id] * 100);
+  if (count === 0) {
+    document.getElementById('top-job').textContent = '역량을 선택해주세요';
+    document.getElementById('top-job').style.color = '#4338CA';
+    document.getElementById('top-reason').textContent = '체크할수록 결과가 정확해집니다';
+  } else {
+    document.getElementById('top-job').textContent = top.short;
+    document.getElementById('top-job').style.color = top.color;
+    document.getElementById('top-reason').textContent =
+      `적합도 ${pct}% · ${JOB_REASONS[top.id]}`;
+  }
+}
+
+// ─── Reset ───────────────────────────────────────────────────────
+function resetAll() {
+  COMPETENCIES.flatMap(c => c.items).forEach(item => {
+    const el = document.getElementById(item.id);
+    if (el) { el.checked = false; el.closest('.competency-item').classList.remove('checked'); }
+  });
+  update();
+}
+
+// Init
+renderChecklist();
+update();
+</script>
+</body>
+</html>
