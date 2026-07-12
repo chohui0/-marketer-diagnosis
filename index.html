@@ -53,6 +53,12 @@
     color: #3c3c43;
     font-weight: 500;
   }
+  .scale-hint {
+    margin-top: 14px;
+    font-size: 12px;
+    color: #8e8e93;
+  }
+  .scale-hint b { color: #4F46E5; font-weight: 700; }
 
   .container { max-width: 1000px; margin: 0 auto; padding: 28px 16px; }
 
@@ -84,28 +90,14 @@
   }
 
   .competency-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 11px 6px;
+    padding: 13px 6px;
     border-bottom: 1px solid #f2f2f7;
-    cursor: pointer;
     border-radius: 8px;
     transition: background 0.15s;
   }
   .competency-item:last-child { border-bottom: none; }
-  .competency-item:hover { background: #F5F5F7; }
-  .competency-item.checked { background: #EEF2FF; }
+  .competency-item.answered { background: #FAFAFF; }
 
-  .competency-item input[type="checkbox"] {
-    margin-top: 3px;
-    width: 17px;
-    height: 17px;
-    cursor: pointer;
-    accent-color: #4F46E5;
-    flex-shrink: 0;
-  }
-  .comp-label { flex: 1; }
   .comp-tag {
     display: inline-block;
     font-size: 10px;
@@ -126,7 +118,6 @@
     margin-bottom: 3px;
     color: #1d1d1f;
   }
-  .competency-item.checked .comp-name { color: #4F46E5; }
   .comp-desc { font-size: 12px; color: #8e8e93; line-height: 1.5; }
   .comp-jd {
     font-size: 11px;
@@ -134,6 +125,30 @@
     margin-top: 3px;
     font-style: italic;
   }
+
+  /* Rubric scale */
+  .scale {
+    display: flex;
+    gap: 6px;
+    margin-top: 9px;
+  }
+  .scale-btn {
+    flex: 1;
+    padding: 7px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #8e8e93;
+    background: #fff;
+    border: 1px solid #e5e5ea;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .scale-btn:hover { border-color: #C7D2FE; color: #4F46E5; }
+  .scale-btn.on-0 { background: #F2F2F7; border-color: #d8d8de; color: #6e6e73; }
+  .scale-btn.on-1 { background: #E0E7FF; border-color: #C7D2FE; color: #4338CA; }
+  .scale-btn.on-2 { background: #818CF8; border-color: #818CF8; color: #fff; }
+  .scale-btn.on-3 { background: #4F46E5; border-color: #4F46E5; color: #fff; }
 
   /* Result panel */
   .result-panel {
@@ -165,6 +180,7 @@
     border-radius: 14px;
     padding: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 14px;
   }
 
   .progress-text {
@@ -178,7 +194,7 @@
   .top-pick {
     border-radius: 10px;
     padding: 14px 16px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     text-align: center;
     border: 1.5px solid #C7D2FE;
     background: #EEF2FF;
@@ -201,6 +217,17 @@
     color: #6366F1;
     line-height: 1.5;
   }
+
+  .compare-note {
+    font-size: 11.5px;
+    color: #6e6e73;
+    background: #F5F5F7;
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .compare-note b { color: #4338CA; }
 
   .bars-title {
     font-size: 13px;
@@ -230,24 +257,148 @@
     transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
   }
 
-  .reset-btn {
-    width: 100%;
+  .action-row {
+    display: flex;
+    gap: 8px;
     margin-top: 16px;
+  }
+  .action-btn {
+    flex: 1;
     padding: 10px;
-    background: #f2f2f7;
     border: none;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
-    color: #6e6e73;
     cursor: pointer;
     transition: background 0.15s;
   }
-  .reset-btn:hover { background: #e5e5ea; }
+  .btn-primary { background: #4F46E5; color: #fff; }
+  .btn-primary:hover { background: #4338CA; }
+  .btn-ghost { background: #f2f2f7; color: #3c3c43; }
+  .btn-ghost:hover { background: #e5e5ea; }
+  .btn-pdf {
+    width: 100%;
+    margin-top: 8px;
+    background: #EEF2FF;
+    color: #4338CA;
+  }
+  .btn-pdf:hover { background: #E0E7FF; }
+
+  .reset-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 9px;
+    background: transparent;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    color: #b0b0ba;
+    cursor: pointer;
+  }
+  .reset-btn:hover { color: #6e6e73; }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%) translateY(20px);
+    background: #1d1d1f;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 11px 20px;
+    border-radius: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Detail card */
+  .detail-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .detail-card.hidden { display: none; }
+  .detail-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .detail-tab {
+    flex: 1;
+    padding: 9px 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #8e8e93;
+    background: #F5F5F7;
+    border: 1.5px solid transparent;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.12s;
+    line-height: 1.35;
+  }
+  .detail-tab.active {
+    background: #EEF2FF;
+    border-color: #C7D2FE;
+    color: #4338CA;
+  }
+  .detail-section { margin-bottom: 14px; }
+  .detail-section:last-child { margin-bottom: 0; }
+  .detail-section h4 {
+    font-size: 12px;
+    font-weight: 700;
+    color: #4F46E5;
+    margin-bottom: 5px;
+  }
+  .detail-section p {
+    font-size: 12.5px;
+    color: #3c3c43;
+    line-height: 1.6;
+  }
 
   @media (max-width: 720px) {
     .layout { flex-direction: column; }
     .result-panel { width: 100%; position: static; }
+  }
+
+  /* PDF / 인쇄: 결과 전체를 한 페이지에 */
+  @media print {
+    @page { size: A4 portrait; margin: 10mm; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: #fff; }
+    header { padding: 8px 24px 12px; border-bottom: 1px solid #e5e5ea; }
+    header h1 { font-size: 20px; }
+    header p, .guide-row, .scale-hint { display: none; }
+    .container { padding: 12px 8px; max-width: none; }
+    .layout { display: block; }
+    .checklist-panel { display: none; }
+    .action-row, .reset-btn, .toast { display: none; }
+
+    /* 레이더(좌) + 적합도(우) 같은 줄, 상세는 아래 가로 전체 */
+    .result-panel {
+      width: 100%;
+      position: static;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .result-card { grid-column: 1; margin: 0; }
+    .reco-card   { grid-column: 2; margin: 0; }
+    .detail-card { grid-column: 1 / -1; margin: 0; }
+
+    .result-card, .reco-card, .detail-card {
+      box-shadow: none;
+      border: 1px solid #e5e5ea;
+      break-inside: avoid;
+      padding: 14px;
+    }
+    .detail-tabs { margin-bottom: 10px; }
+    .detail-section { margin-bottom: 9px; }
   }
 </style>
 </head>
@@ -256,14 +407,15 @@
 <header>
   <div class="badge">디지털 마케터 부트캠프</div>
   <h1>나는 어떤 마케터일까? 🎯</h1>
-  <p>경험이 없어도 괜찮습니다. 관심·성향·재미를 기준으로 솔직하게 체크하세요.<br>
-     체크할수록 나의 직무 적합도가 레이더 차트로 나타납니다.</p>
+  <p>경험이 없어도 괜찮습니다. 관심·성향·재미를 기준으로 솔직하게 답하세요.<br>
+     각 문항이 <b>얼마나 나에게 해당하는지</b> 정도를 고르면 직무 적합도가 더 정확해집니다.</p>
   <div class="guide-row">
     <span class="guide-chip"><span style="background:#EEF2FF;color:#4F46E5;padding:1px 5px;border-radius:6px;font-size:10px;font-weight:700;">관심있다</span> 배우고 싶거나 흥미로운 것</span>
     <span class="guide-chip"><span style="background:#ECFDF5;color:#059669;padding:1px 5px;border-radius:6px;font-size:10px;font-weight:700;">잘한다</span> 남들보다 잘한다고 느끼는 것</span>
     <span class="guide-chip"><span style="background:#FFF7ED;color:#D97706;padding:1px 5px;border-radius:6px;font-size:10px;font-weight:700;">재미있다</span> 하면 시간 가는 줄 모르는 것</span>
     <span class="guide-chip"><span style="background:#FDF4FF;color:#9333EA;padding:1px 5px;border-radius:6px;font-size:10px;font-weight:700;">경험있다</span> 실제로 해본 적 있는 것</span>
   </div>
+  <div class="scale-hint">문항마다 <b>아니다 · 조금 · 그렇다 · 매우</b> 4단계로 답하세요. 강할수록 해당 직무 점수가 크게 반영됩니다.</div>
 </header>
 
 <div class="container">
@@ -279,22 +431,36 @@
       </div>
 
       <div class="reco-card">
-        <div class="progress-text"><span id="checked-count">0</span> / 30개 항목 선택됨</div>
+        <div class="progress-text"><span id="checked-count">0</span> / 30개 문항 응답됨</div>
 
         <div class="top-pick">
           <div class="pick-label">✨ 가장 잘 맞는 직무</div>
-          <div class="pick-job" id="top-job">항목을 선택해주세요</div>
-          <div class="pick-reason" id="top-reason">체크할수록 결과가 정확해집니다</div>
+          <div class="pick-job" id="top-job">문항에 응답해주세요</div>
+          <div class="pick-reason" id="top-reason">답할수록 결과가 정확해집니다</div>
         </div>
+
+        <div class="compare-note" id="compare-note" style="display:none;"></div>
 
         <div class="bars-title">직무별 적합도</div>
         <div id="job-bars"></div>
 
+        <div class="action-row">
+          <button class="action-btn btn-primary" onclick="copyLink()">🔗 결과 링크 복사</button>
+          <button class="action-btn btn-ghost" onclick="copySummary()">📋 요약 복사</button>
+        </div>
+        <button class="action-btn btn-pdf" onclick="savePDF()">📄 결과를 PDF로 저장</button>
         <button class="reset-btn" onclick="resetAll()">↺ 초기화</button>
+      </div>
+
+      <div class="detail-card hidden" id="detail-card">
+        <div class="detail-tabs" id="detail-tabs"></div>
+        <div class="detail-body" id="detail-body"></div>
       </div>
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const JOBS = [
@@ -313,6 +479,40 @@ const JOB_REASONS = {
   growth:      '데이터 기반 실험·퍼널 분석 성향이 높습니다',
   crm:         '고객 분석·관계 관리 성향이 강점입니다',
   ae:          '기획력·클라이언트 커뮤니케이션이 뛰어납니다',
+};
+
+// 결과 직무 상세 설명
+const JOB_DETAILS = {
+  performance: {
+    do:    '메타·구글·카카오 등 유료 광고를 직접 운영하며 CPA·ROAS 같은 지표를 관리합니다. 한정된 광고비를 어디에 배분할지 결정하고, 소재를 테스트하며 성과 데이터를 매일 들여다보고 최적화합니다.',
+    skill: 'GA4·광고 매체 대시보드 해석, 핵심 지표(CTR·CVR·ROAS·CPA) 이해, A/B 테스트 설계, 스프레드시트 기반 성과 분석 능력을 키우면 좋습니다.',
+    path:  '퍼포먼스 마케터 → 그로스/미디어 리드 → 마케팅 총괄. 데이터를 다뤄본 경험이 커리어 내내 강력한 자산으로 쌓입니다.',
+  },
+  content: {
+    do:    'SNS·블로그·유튜브 채널을 기획·운영하고 카피와 숏폼을 직접 만듭니다. 요즘 뜨는 트렌드를 빠르게 캐치해 브랜드 메시지를 콘텐츠로 풀어내고, 도달과 참여를 만들어냅니다.',
+    skill: '카피라이팅, 숏폼 기획·편집, 트렌드 리서치, 디자인 툴(캔바·피그마), AI 툴 활용 능력이 핵심입니다.',
+    path:  '콘텐츠 마케터 → 콘텐츠 리드/브랜드 마케터 → 채널 총괄·크리에이티브 디렉터. 만든 콘텐츠 자체가 포트폴리오가 됩니다.',
+  },
+  brand: {
+    do:    '브랜드의 포지셔닝·톤앤매너·아이덴티티를 설계하고, 하나의 캠페인을 기획→실행→성과 측정→회고까지 이끕니다. "이 브랜드는 어떤 이미지여야 하는가"를 정의하는 역할입니다.',
+    skill: '브랜드 전략, 타겟·핵심 메시지 설계, 크리에이티브 디렉션, 캠페인 프로젝트 관리 역량이 필요합니다.',
+    path:  '브랜드 마케터 → 브랜드 매니저(BM) → 브랜드 총괄/CMO. 시장을 읽는 안목과 기획력이 오래 통하는 무기가 됩니다.',
+  },
+  growth: {
+    do:    '유입→전환→리텐션으로 이어지는 퍼널을 분석하고, 가설을 세워 실험으로 지표를 개선합니다. "왜 이 사람들은 결제 직전에 나갈까?"를 구조적으로 파고들며 제품·마케팅을 함께 실험합니다.',
+    skill: '퍼널·코호트 분석, 실험 설계, GA4 등 데이터 툴, 기초 SQL, 문제를 정의하고 쪼개는 사고력이 중요합니다.',
+    path:  '그로스 마케터 → 그로스 리드 → 그로스/프로덕트 총괄. 마케팅과 제품을 함께 보는 시야가 강점이 됩니다.',
+  },
+  crm: {
+    do:    '고객을 특성별 세그먼트로 나눠 이메일·앱푸시·알림톡 등 개인화 메시지를 적절한 타이밍에 보냅니다. 한 번 온 고객이 다시 오게 만드는 리텐션과 고객 여정을 설계합니다.',
+    skill: '고객 세그먼테이션, 메시지·발송 타이밍 설계, CRM 툴(브레이즈 등), 데이터 기반 개인화 감각이 필요합니다.',
+    path:  'CRM 마케터 → CRM 리드 → 리텐션/라이프사이클 마케팅 총괄. 고객 데이터를 다루는 전문성이 희소가치가 됩니다.',
+  },
+  ae: {
+    do:    '대행사에서 여러 클라이언트의 마케팅을 대신 기획·운영합니다. 제안서와 보고서를 만들고, 매체 운영과 커뮤니케이션을 조율하며, 다양한 산업과 브랜드를 폭넓게 경험합니다.',
+    skill: '클라이언트 커뮤니케이션, 제안서·PT, 여러 프로젝트를 동시에 굴리는 관리력, 매체 운영 전반의 이해가 필요합니다.',
+    path:  'AE → AE 팀장/기획 리드 → 인하우스 마케터로 전환하거나 대행사 임원으로 성장. 다양한 경험이 빠르게 쌓입니다.',
+  },
 };
 
 // tag: 'interest' | 'good' | 'enjoy' | 'exp'
@@ -585,13 +785,31 @@ const TAG_CONFIG = {
   exp:      { cls: 'tag-exp',      label: '경험있다'  },
 };
 
-// Max scores
+// Rubric levels — multiplier = v / 3
+const LEVELS = [
+  { v: 0, label: '아니다' },
+  { v: 1, label: '조금'   },
+  { v: 2, label: '그렇다' },
+  { v: 3, label: '매우'   },
+];
+const MAX_LEVEL = 3;
+
+const ALL_ITEMS = COMPETENCIES.flatMap(c => c.items);
+const TOTAL = ALL_ITEMS.length;
+const STORAGE_KEY = 'marketer-diagnosis-v2';
+
+// state: id -> level (0..3)
+const state = {};
+ALL_ITEMS.forEach(item => state[item.id] = 0);
+
+// 각 직무 만점(모든 문항 '매우'일 때 = 가중치 합)
 const MAX = {};
 JOBS.forEach(j => {
-  MAX[j.id] = COMPETENCIES.flatMap(c => c.items).reduce((s, item) => s + item.w[j.id], 0);
+  MAX[j.id] = ALL_ITEMS.reduce((s, item) => s + item.w[j.id], 0);
 });
 
-const TOTAL = COMPETENCIES.flatMap(c => c.items).length;
+let currentSorted = [];   // 현재 정렬된 직무 배열
+let detailRank = 0;       // 상세 탭 선택 (0 = 1위, 1 = 2위)
 
 // Render checklist
 function renderChecklist() {
@@ -607,18 +825,25 @@ function renderChecklist() {
 
     cat.items.forEach(item => {
       const tc = TAG_CONFIG[item.tag];
-      const lbl = document.createElement('label');
-      lbl.className = 'competency-item';
-      lbl.innerHTML = `
-        <input type="checkbox" id="${item.id}">
-        <div class="comp-label">
-          <span class="comp-tag ${tc.cls}">${tc.label}</span>
-          <div class="comp-name">${item.name}</div>
-          <div class="comp-desc">${item.desc}</div>
-          <div class="comp-jd">📌 JD 반영: ${item.jd}</div>
+      const row = document.createElement('div');
+      row.className = 'competency-item';
+      row.id = 'item-' + item.id;
+      row.innerHTML = `
+        <span class="comp-tag ${tc.cls}">${tc.label}</span>
+        <div class="comp-name">${item.name}</div>
+        <div class="comp-desc">${item.desc}</div>
+        <div class="comp-jd">📌 JD 반영: ${item.jd}</div>
+        <div class="scale" data-id="${item.id}">
+          ${LEVELS.map(l => `<button type="button" class="scale-btn" data-v="${l.v}">${l.label}</button>`).join('')}
         </div>`;
-      lbl.querySelector('input').addEventListener('change', update);
-      wrap.appendChild(lbl);
+      row.querySelectorAll('.scale-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state[item.id] = parseInt(btn.dataset.v, 10);
+          save();
+          update();
+        });
+      });
+      wrap.appendChild(row);
     });
     panel.appendChild(wrap);
   });
@@ -627,9 +852,9 @@ function renderChecklist() {
 function getScores() {
   const scores = {};
   JOBS.forEach(j => scores[j.id] = 0);
-  COMPETENCIES.flatMap(c => c.items).forEach(item => {
-    if (document.getElementById(item.id)?.checked)
-      JOBS.forEach(j => scores[j.id] += item.w[j.id]);
+  ALL_ITEMS.forEach(item => {
+    const mult = state[item.id] / MAX_LEVEL;
+    if (mult > 0) JOBS.forEach(j => scores[j.id] += item.w[j.id] * mult);
   });
   return scores;
 }
@@ -642,19 +867,27 @@ function getNorm(scores) {
 
 function update() {
   let count = 0;
-  COMPETENCIES.flatMap(c => c.items).forEach(item => {
-    const el = document.getElementById(item.id);
-    if (!el) return;
-    el.closest('.competency-item').classList.toggle('checked', el.checked);
-    if (el.checked) count++;
+  ALL_ITEMS.forEach(item => {
+    const row = document.getElementById('item-' + item.id);
+    const lv = state[item.id];
+    if (lv > 0) count++;
+    row.classList.toggle('answered', lv > 0);
+    row.querySelectorAll('.scale-btn').forEach(btn => {
+      const v = parseInt(btn.dataset.v, 10);
+      btn.className = 'scale-btn' + (v === lv ? ' on-' + v : '');
+    });
   });
   document.getElementById('checked-count').textContent = count;
 
   const scores = getScores();
   const norm   = getNorm(scores);
+  currentSorted = [...JOBS].sort((a, b) => norm[b.id] - norm[a.id]);
+
   drawRadar(norm);
   renderBars(norm);
   renderTopPick(norm, count);
+  renderCompare(norm, count);
+  renderDetail(count);
 }
 
 function drawRadar(norm) {
@@ -722,8 +955,7 @@ function drawRadar(norm) {
 }
 
 function renderBars(norm) {
-  const sorted = [...JOBS].sort((a, b) => norm[b.id] - norm[a.id]);
-  document.getElementById('job-bars').innerHTML = sorted.map(job => {
+  document.getElementById('job-bars').innerHTML = currentSorted.map(job => {
     const pct = Math.round(norm[job.id] * 100);
     return `<div class="job-bar">
       <div class="job-bar-header">
@@ -738,28 +970,167 @@ function renderBars(norm) {
 }
 
 function renderTopPick(norm, count) {
-  const top = JOBS.reduce((a, b) => norm[a.id] >= norm[b.id] ? a : b);
-  const pct = Math.round(norm[top.id] * 100);
+  const topJob = document.getElementById('top-job');
+  const topReason = document.getElementById('top-reason');
   if (count === 0) {
-    document.getElementById('top-job').textContent = '항목을 선택해주세요';
-    document.getElementById('top-job').style.color = '#4338CA';
-    document.getElementById('top-reason').textContent = '체크할수록 결과가 정확해집니다';
+    topJob.textContent = '문항에 응답해주세요';
+    topJob.style.color = '#4338CA';
+    topReason.textContent = '답할수록 결과가 정확해집니다';
+    return;
+  }
+  const top = currentSorted[0];
+  const pct = Math.round(norm[top.id] * 100);
+  topJob.textContent = top.short;
+  topJob.style.color = top.color;
+  topReason.textContent = `적합도 ${pct}% · ${JOB_REASONS[top.id]}`;
+}
+
+function renderCompare(norm, count) {
+  const box = document.getElementById('compare-note');
+  if (count === 0) { box.style.display = 'none'; return; }
+  const top = currentSorted[0], second = currentSorted[1];
+  const gap = Math.round((norm[top.id] - norm[second.id]) * 100);
+  box.style.display = 'block';
+  if (gap <= 8) {
+    box.innerHTML = `<b>${top.short}</b>와 <b>${second.short}</b> 성향이 비슷해요 (격차 ${gap}%p). 두 직무를 모두 살펴보고 결정하는 걸 추천해요.`;
   } else {
-    document.getElementById('top-job').textContent = top.short;
-    document.getElementById('top-job').style.color = top.color;
-    document.getElementById('top-reason').textContent =
-      `적합도 ${pct}% · ${JOB_REASONS[top.id]}`;
+    box.innerHTML = `2위는 <b>${second.short}</b> (${Math.round(norm[second.id]*100)}%). 1위와 ${gap}%p 차이로 <b>${top.short}</b> 성향이 뚜렷합니다.`;
   }
 }
 
-function resetAll() {
-  COMPETENCIES.flatMap(c => c.items).forEach(item => {
-    const el = document.getElementById(item.id);
-    if (el) { el.checked = false; el.closest('.competency-item').classList.remove('checked'); }
+function renderDetail(count) {
+  const card = document.getElementById('detail-card');
+  if (count === 0) { card.classList.add('hidden'); return; }
+  card.classList.remove('hidden');
+
+  const top2 = currentSorted.slice(0, 2);
+  if (detailRank > top2.length - 1) detailRank = 0;
+
+  const medals = ['🥇 1위', '🥈 2위'];
+  document.getElementById('detail-tabs').innerHTML = top2.map((job, i) =>
+    `<button class="detail-tab ${i === detailRank ? 'active' : ''}" data-rank="${i}">
+      ${medals[i]}<br>${job.short}</button>`
+  ).join('');
+  document.querySelectorAll('.detail-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      detailRank = parseInt(tab.dataset.rank, 10);
+      renderDetail(count);
+    });
   });
+
+  const job = top2[detailRank];
+  const d = JOB_DETAILS[job.id];
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-section">
+      <h4>💼 무슨 일을 하나요?</h4>
+      <p>${d.do}</p>
+    </div>
+    <div class="detail-section">
+      <h4>🧩 이런 역량을 키우면 좋아요</h4>
+      <p>${d.skill}</p>
+    </div>
+    <div class="detail-section">
+      <h4>🚀 커리어 경로</h4>
+      <p>${d.path}</p>
+    </div>`;
+}
+
+/* ---------- 저장 / 복원 / 공유 ---------- */
+
+function encode() {
+  return ALL_ITEMS.map(item => state[item.id]).join('');
+}
+
+function decode(str) {
+  if (!str || str.length !== TOTAL || !/^[0-3]+$/.test(str)) return false;
+  ALL_ITEMS.forEach((item, i) => state[item.id] = parseInt(str[i], 10));
+  return true;
+}
+
+function save() {
+  const code = encode();
+  try { localStorage.setItem(STORAGE_KEY, code); } catch (e) {}
+  history.replaceState(null, '', code.includes('0'.repeat(TOTAL)) ? location.pathname : '#r=' + code);
+}
+
+function restore() {
+  const hash = location.hash.match(/r=([0-3]+)/);
+  if (hash && decode(hash[1])) return;
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) decode(saved);
+  } catch (e) {}
+}
+
+function copyText(text, msg) {
+  const done = () => showToast(msg);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+  done();
+}
+
+function copyLink() {
+  const code = encode();
+  if (!code.replace(/0/g, '')) { showToast('먼저 문항에 응답해주세요'); return; }
+  const url = location.origin + location.pathname + '#r=' + code;
+  copyText(url, '결과 링크가 복사됐어요 🔗');
+}
+
+function copySummary() {
+  const answered = ALL_ITEMS.some(item => state[item.id] > 0);
+  if (!answered) { showToast('먼저 문항에 응답해주세요'); return; }
+  const scores = getScores();
+  const norm = getNorm(scores);
+  const sorted = [...JOBS].sort((a, b) => norm[b.id] - norm[a.id]);
+  const medals = ['🥇', '🥈', '🥉'];
+  const lines = sorted.map((j, i) =>
+    `${medals[i] || '  '} ${j.short} ${Math.round(norm[j.id] * 100)}%`);
+  const text =
+    `나는 어떤 마케터일까? — 직무 적합도 진단 결과\n\n` +
+    lines.join('\n') +
+    `\n\n1위 ${sorted[0].short}: ${JOB_REASONS[sorted[0].id]}\n` +
+    `진단하러 가기 → ${location.origin + location.pathname}`;
+  copyText(text, '결과 요약이 복사됐어요 📋');
+}
+
+function savePDF() {
+  const answered = ALL_ITEMS.some(item => state[item.id] > 0);
+  if (!answered) { showToast('먼저 문항에 응답해주세요'); return; }
+  window.print();
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function resetAll() {
+  ALL_ITEMS.forEach(item => state[item.id] = 0);
+  detailRank = 0;
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  history.replaceState(null, '', location.pathname);
   update();
 }
 
+restore();
 renderChecklist();
 update();
 </script>
